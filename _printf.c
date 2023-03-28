@@ -1,48 +1,66 @@
 #include "main.h"
+
+void print_buffer(char buffer[], int *buff_ind);
+
 /**
- * _printf - produces output according to a format
- * @format: character string containing zero or more directives
- * Return: the number of characters printed
+ * _printf - custom printf function
+ * @format: format string
+ * Return: number of printed characters
  */
 int _printf(const char *format, ...)
 {
+	int i, printed = 0, printed_chars = 0;
+	int flags, width, precision, size, buff_ind = 0;
 	va_list args;
-	int i, sum;
-	char c, *s;
+	char buffer[BUFF_SIZE];
+
+	if (format == NULL)
+		return (-1);
 
 	va_start(args, format);
-	for (i = 0, sum = 0; format[i] != '\0'; i++)
+
+	for (i = 0; format && format[i] != '\0'; i++)
 	{
 		if (format[i] != '%')
 		{
-			if (format[i] == '\n')
-			{
-				write(1, "\n", 1); }
-			else
-			{write(1, &format[i], 1); }
-			sum++; }
+			buffer[buff_ind++] = format[i];
+			if (buff_ind == BUFF_SIZE)
+				print_buffer(buffer, &buff_ind);
+			/* write(1, &format[i], 1);*/
+			printed_chars++;
+		}
 		else
 		{
-			switch (format[++i])
-			{case 'c':
-					c = (char)va_arg(args, int);
-					write(1, &c, 1);
-					sum++;
-					break;
-				case 's':
-					s = va_arg(args, char *);
-					while (*s != '\0')
-					{
-						write(1, s++, 1);
-						sum++; }
-					break;
-				case '%':
-					write(1, &format[i], 1);
-					sum++;
-					break;
-				default:
-					write(1, &format[i - 1], 2);
-					sum += 2;
-					break;
-			} } } va_end(args);
-	return (sum); }
+			print_buffer(buffer, &buff_ind);
+			flags = get_flags(format, &i);
+			width = get_width(format, &i, args);
+			precision = get_precision(format, &i, args);
+			size = get_size(format, &i);
+			++i;
+			printed = handle_print(format, &i, args, buffer,
+				flags, width, precision, size);
+			if (printed == -1)
+				return (-1);
+			printed_chars += printed;
+		}
+	}
+
+	print_buffer(buffer, &buff_ind);
+
+	va_end(args);
+
+	return (printed_chars);
+}
+
+/**
+ * print_buffer - prints the contents of the buffer if it exists
+ * @buffer: array of characters
+ * @buff_ind: index at which to add next character, represents the length
+ */
+void print_buffer(char buffer[], int *buff_ind)
+{
+	if (*buff_ind > 0)
+		write(1, &buffer[0], *buff_ind);
+
+	*buff_ind = 0;
+}

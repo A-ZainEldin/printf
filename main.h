@@ -8,6 +8,6 @@
 
 int _printf(const char *format, ...);
 int foundString(char*);
-int foundChar(char);
+int foundChar(int);
 
 #endif

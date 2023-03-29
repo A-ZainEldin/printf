@@ -123,7 +123,7 @@ int flags, int width, int precision, int size)
 	long int n = va_arg(types, long int);
 	unsigned long int num;
 
-	n = convert_size_number(n, size);
+	n = convertSizeNum(n, size);
 
 	if (n == 0)
 		buffer[i--] = '0';

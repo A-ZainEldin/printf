@@ -103,7 +103,6 @@ int print_percent(va_list args, char buffer[],
 
 #include "main.h"
 
-/************************* PRINT INT *************************/
 
 /**
  * print_int - Prints an integer

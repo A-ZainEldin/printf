@@ -72,7 +72,7 @@ int printingNum(int is_negative, int ind, char buffer[],
 	else if (flags & F_SPACE)
 		extra_ch = ' ';
 
-	return (write_num(ind, buffer, flags, width, precision,
+	return (fun_print_num(ind, buffer, flags, width, precision,
 		length, padd, extra_ch));
 }
 
@@ -214,8 +214,8 @@ int fun_to_write_pointer(char buffer[], int ind, int length,
 	if (width > length)
 	{
 		for (j = 3; j < width - length + 3; j++)
-			buffer[i] = padd;
-		buffer[i] = '\0';
+			buffer[j] = padd;
+		buffer[j] = '\0';
 		if (flags & F_MINUS && padd == ' ')/* Asign extra char to left of buffer */
 		{
 			buffer[--ind] = 'x';
